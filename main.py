@@ -1,4 +1,3 @@
-# libraries
 from time import time
 import pyttsx3                     # text to speech conversion 
 import datetime                    # datetime
@@ -86,11 +85,15 @@ if __name__ == "__main__":
 
         # open stackoverflow 
         elif 'open stack overflow' in query:
-            webbrowser.open("stackoverflow.com")
+            webbrowser.open("stackoverflow.com")  
 
         # open geekforgeeks
         elif 'open geeks for geeks' in query:
-            webbrowser.open("geeksforgeeks.org")
+            webbrowser.open("geeksforgeeks.com")
+
+        # open salary predictor
+        elif 'open salary predictor' in query:
+            webbrowser.open("https://share.streamlit.io/vasugargdev/salary-predictor-ml-app/main/app.py")
 
         # play music
         elif 'play music' in query:
@@ -105,9 +108,8 @@ if __name__ == "__main__":
             speak(f"Sir ji, The time is {strTime}")
 
         # other Command
-        elif 'tell me date' in query: 
-            strdate = datetime.datetime.now().strftime("%D:%M:%Y")               
-            speak(f"Sir ji, The time is {strdate}")
+        elif 'date' in query:                 
+            speak('sorry, I have a headache')
 
         # other Command
         elif 'are you single' in query:      
@@ -143,7 +145,7 @@ if __name__ == "__main__":
                 speak("Email has been send!")
             except Exception as e:
                 print(e)
-                speak("Sorry my friend Varun. I am not able to send this email.")
+                speak("Sorry my friend Varun Bhai. I am not able to send this email.")
 
         
 
