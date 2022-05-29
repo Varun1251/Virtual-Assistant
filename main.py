@@ -1,68 +1,150 @@
 # libraries
-import speech_recognition as sr                 # for voice recognition
-import pyttsx3                                  # alexa talk to me
-import pywhatkit                                # access the song on youtube
-import datetime                                 # to show the time
-import wikipedia                                # to access the wikipedia
-import pyjokes                                  # for jokes
+from time import time
+import pyttsx3                     # text to speech conversion 
+import datetime                    # datetime
+import speech_recognition as sr    # speech recognition
+import wikipedia                   # access wikipedia
+import webbrowser                  # access web browser
+import pywhatkit                   # access the song on youtube 
+import os                          # if the program is run it create the files
+import smtplib                     # send emial from gmail
+import pyjokes                     # access programmin jokes
 
-listener = sr.Recognizer()
-# create engine to speak with you 
-engine = pyttsx3.init()
-# to change the voice
+# Speech engine
+engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[1].id)
 
-# alexa talk to you
-engine.say('hi Varun')
-engine.say('What can I do for you')
-engine.runAndWait()
-
-
-def talk(text):                         # alexa repeat your words
-    engine.say(text)
+def speak(audio):
+    engine.say(audio)
     engine.runAndWait()
 
+# Wishme Command
+def wishMe():
+    hour = int(datetime.datetime.now().hour)
+    if hour>=0 and hour<12:
+        speak("Good Morning!")
 
-def take_command():                 # alexa take commands
-    try:
-        with sr.Microphone() as source:         # use microphone
-            print('listening...')
-            voice = listener.listen(source)
-            command = listener.recognize_google(voice)          # convert voice to text
-            command = command.lower()
-            if 'alexa' in command:                              # detect alexa is mention or not
-                command = command.replace('alexa', '')
-                print(command)
-    except:
-        pass
-    return command
+    elif hour>=12 and hour<18:
+        speak("Good Afternon!")
 
-
-def run_alexa():                        # access the take_command
-    command = take_command()
-    print(command)
-    if 'play' in command:               # play song on youtube
-        song = command.replace('play', '')
-        talk('playing ' + song)
-        pywhatkit.playonyt(song)
-    elif 'time' in command:              # show and tell the time
-        time = datetime.datetime.now().strftime('%I:%M %p')
-        talk('Current time is ' + time)
-    elif 'who is' in command:          # show in wikipedia
-        person = command.replace('who the heck is', '')
-        info = wikipedia.summary(person, 1)
-        print(info)
-        talk(info)
-    elif 'date' in command:                 # other comments
-        talk('sorry, I have a headache')
-    elif 'are you single' in command:       # other comments
-        talk('I am in a relationship with wifi')
-    elif 'joke' in command:                 # for jokes
-        talk(pyjokes.get_joke())
     else:
-        talk('Please say the command again my friend.')
+        speak("Good Evening!")
+    
+    speak("Hi, I am Zira. Please tell me how may I help you")
 
+# Take Command
+def takeCommand():
+    # It take microphone input from the user and return string output
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        r.pause_threshold = 1
+        audio = r.listen(source)
 
-while True:
-    run_alexa()
+    try:
+        print("Recognizing....")
+        query = r.recognize_google(audio, language='en-in')
+        print(f"User said: {query}\n")
+
+    except Exception as e:
+        # print(e)
+        print("Say that again please.....")
+        speak("Say that again please.....")
+        return "None"
+    return query
+
+def sendEmail(to, content):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login('youremail@gmail.com', 'your-password')
+    server.sendmail('youremial@gmail.com', to, content)
+    server.close
+
+if __name__ == "__main__":
+    wishMe()
+    while True:
+        query = takeCommand().lower()
+
+        # logic for executed tasks based on query.
+        if 'wikipedia' in query:
+            speak('Searching Wikipedia....')
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query, sentences=2)
+            speak("According to Wikipedia")
+            print(results)
+            speak(results)
+
+        # open youtube
+        elif 'open youtube' in query:
+            webbrowser.open("youtube.com")
+
+        # open google 
+        elif 'open google' in query:
+            webbrowser.open("google.com")
+
+        # open stackoverflow 
+        elif 'open stack overflow' in query:
+            webbrowser.open("stackoverflow.com")
+
+        # open geekforgeeks
+        elif 'open geeks for geeks' in query:
+            webbrowser.open("geeksforgeeks.org")
+
+        # play music
+        elif 'play music' in query:
+            music_dir = ''
+            songs = os.listdir(music_dir)
+            print(songs)
+            os.startfile(os.path.join(music_dir, songs[0]))
+
+        # tell time
+        elif 'the time' in query:
+            strTime = datetime.datetime.now().strftime("%H:%M:%S")
+            speak(f"Sir ji, The time is {strTime}")
+
+        # other Command
+        elif 'tell me date' in query: 
+            strdate = datetime.datetime.now().strftime("%D:%M:%Y")               
+            speak(f"Sir ji, The time is {strdate}")
+
+        # other Command
+        elif 'are you single' in query:      
+            speak('I am in a relationship with wifi')
+
+        # open vs code
+        elif 'open code' in query:
+            codePath = "C:\\Users\\I5\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+            os.startfile(codePath)
+
+        # open pycharm
+        elif 'open pycharm' in query:
+            codePath = "C:\\Program Files\\JetBrains\\PyCharm Community Edition 2021.3.1\\bin\\pycharm64.exe"
+            os.startfile(codePath)
+
+        # tell joke
+        elif 'joke' in query:                 
+            speak(pyjokes.get_joke())
+
+        # play on youtube
+        elif 'play' in query:            
+            song = query.replace('play', '')
+            speak('playing ' + song)
+            pywhatkit.playonyt(song)
+
+        # access gmail 
+        elif 'email to varun' in query:
+            try:
+                speak("What should I say?")
+                content = takeCommand()
+                to = "varunkapruwan1251@gmial.com"
+                sendEmail(to, content)
+                speak("Email has been send!")
+            except Exception as e:
+                print(e)
+                speak("Sorry my friend Varun. I am not able to send this email.")
+
+        
+
+            
