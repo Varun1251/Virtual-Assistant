@@ -6,7 +6,7 @@ import wikipedia                   # access wikipedia
 import webbrowser                  # access web browser
 import pywhatkit                   # access the song on youtube 
 import os                          # if the program is run it create the files
-import smtplib                     # send emial from gmail
+import smtplib                     # send email from gmail
 import pyjokes                     # access programmin jokes
 
 # Speech engine
@@ -57,7 +57,7 @@ def sendEmail(to, content):
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
-    server.login('youremail@gmail.com', 'your-password')
+    server.login('varunkapruwan1151@gmail.com', 'your-password')
     server.sendmail('youremial@gmail.com', to, content)
     server.close
 
@@ -95,6 +95,18 @@ if __name__ == "__main__":
         elif 'open salary predictor' in query:
             webbrowser.open("https://share.streamlit.io/vasugargdev/salary-predictor-ml-app/main/app.py")
 
+        # open facebook
+        elif 'facebook' in query:
+            webbrowser.open("facebook.com")
+
+        # open instagram
+        elif 'instagram' in query:
+            webbrowser.open("instagram.com")     
+
+        # open Gmail
+        elif 'gmail' in query:
+            webbrowser.open("gmail.com")
+
         # play music
         elif 'play music' in query:
             music_dir = ''
@@ -111,9 +123,17 @@ if __name__ == "__main__":
         elif 'date' in query:                 
             speak('sorry, I have a headache')
 
+        # intro
+        elif 'tell me something about you' in query:
+            speak('yes sir, My name is zira and I am a advance AI machine and i\'m he re to help you') 
+
         # other Command
         elif 'are you single' in query:      
             speak('I am in a relationship with wifi')
+
+        #other command 
+        elif 'I love You' in query:
+            speak("Sorry, I have a boyfriend")
 
         # open vs code
         elif 'open code' in query:
